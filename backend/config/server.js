@@ -1,3 +1,6 @@
+require('dotenv').config()
+
+
 const bodyParser = require('body-parser');
 
 const app = require('express')()
@@ -9,8 +12,11 @@ const app = require('express')()
 app.use(bodyParser.urlencoded({extended: true}))
    .use(bodyParser.json())
    .use(cors())
-   .use(validator());
+   .use(validator())
+   .use(require('./router'));
 
+
+   
 consign()
     .include('./app')
     .into(app);
