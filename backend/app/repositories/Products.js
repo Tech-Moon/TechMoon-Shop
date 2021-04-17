@@ -3,31 +3,31 @@ function Products() {
     this._db = connect;
 }
 
-Products.prototype.get = async function (product, res) {
+Products.prototype.select = async function (product, res) {
     try {
         const conn = await this._db(),
             [rows] = await conn.query('SELECT * FROM products');
 
-        return res.json({ message: rows });
+        return res.status(200).json({ message: rows });
     } catch (err) {
-        return res.json({ message: 'error: ' + err });
+        return res.status(500).json({ message: 'error: ' + err });
     }
 };
 
-Products.prototype.post = async function (product, res) {
+Products.prototype.insert = async function (product, res) {
     try {
         const conn = await this._db(),
             sql = 'INSERT INTO products (name, about, amount, value) VALUES (?,?,?,?)',
             values = [product.name, product.about, product.amount, product.value],
             response = await conn.query(sql, values);
 
-        return res.json({ message: response });
+        return res.status(200).json({ message: response });
     } catch (err) {
-        return res.json({ message: 'error: ' + err });
+        return res.status(500).json({ message: 'error: ' + err });
     }
 };
 
-Products.prototype.edit = async function (product, res) {
+Products.prototype.update = async function (product, res) {
     try {
         const sql = 'UPDATE products SET name = ?, about = ?, amount = ?, value = ? WHERE id = ?',
             conn = await this._db(),
@@ -36,9 +36,9 @@ Products.prototype.edit = async function (product, res) {
 
         const newProduct = await conn.query('SELECT * FROM products WHERE id = ?', product.id);
 
-        return res.json({ message: newProduct });
+        return res.status(200).json({ message: newProduct });
     } catch (err) {
-        return res.json({ message: 'error: ' + err });
+        return res.status(500).json({ message: 'error: ' + err });
     }
 };
 
@@ -50,10 +50,9 @@ Products.prototype.delete = async function (product, res) {
             values = [id];
         await conn.query(sql, values);
 
-        return res.json({ message: 'Product deleted' });
+        return res.status(200).json({ message: 'Product deleted' });
     } catch (err) {
-        return res.json({ message: 'error: ' + err });
-    }
+        return res.status(500).json({ message: 'error: ' + err });
 };
 
 module.exports = function () {
