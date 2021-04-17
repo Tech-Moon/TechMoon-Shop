@@ -1,24 +1,21 @@
-require('dotenv').config()
+require('dotenv').config();
 
+const app = require('express')(),
+    bodyParser = require('body-parser'),
+    consign = require('consign'),
+    cors = require('cors'),
+    validator = require('express-validator');
 
-const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }))
+    .use(bodyParser.json())
+    .use(cors())
+    .use(validator());
 
-const app = require('express')()
-            bodyPaserser = require('body-parser'),
-            consign = require('consign'),
-            cors = require('cors'),
-            validator = require('express-validator');
-
-app.use(bodyParser.urlencoded({extended: true}))
-   .use(bodyParser.json())
-   .use(cors())
-   .use(validator())
-   .use(require('./router'));
-
-
-   
 consign()
-    .include('./app')
+    .include('./app/routes')
+    .then('./config/database.js')
+    .then('./app/controllers')
+    .then('./app/repositories')
     .into(app);
 
 module.exports = app;
