@@ -20,11 +20,27 @@ module.exports.register = (application, req, res) => {
     const encrypt = (password) => {
         const salt = bcrypt.genSaltSync(10);
         return bcrypt.hashSync(password, salt);
-    };
+    }
 
     data.password = encrypt(data.password);
     delete data.confirmPassword;
 
     const repository = new application.app.repositories.Auth();
     repository.insert(data, res);
-};
+}
+
+module.exports.login = (application, req, res) => {
+    const data = req.body;
+
+    req.assert('email', 'Email obrigatório.').notEmpty();
+    req.assert('password', 'Senha é obrigatória.').notEmpty();
+
+    const errors = req.validationErrors();
+
+    if (errors) {
+        return res.status(400).json({ errors });
+    }
+
+    const repository = new application.app.repositories.Auth();
+    repository.login(data, res);
+}
