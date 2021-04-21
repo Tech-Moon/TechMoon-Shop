@@ -14,4 +14,4 @@ module.exports = (application) => {
     application.delete('/delete-product/:id', (req, res) => {
         application.app.controllers.products.deleteProduct(application, req, res);
     });
-};
+}
